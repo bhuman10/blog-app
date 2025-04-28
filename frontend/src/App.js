@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Suspense, createContext, lazy, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 
@@ -61,12 +61,12 @@ function App() {
         <Header logout={logout} />
         <Suspense fallback={<Loading />}>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login getUser={getUser} />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/viewPost/:id" element={<ViewPost />} />
-            <Route path="/editPost" element={<EditPost />} />
-            <Route path="/editPost/:id" element={<EditPost />} />
+            <Route path="/" element={user ? <Home /> : <Navigate to="/login" />} />
+            <Route path="/login" element={!user ? <Login getUser={getUser} /> : <Navigate to="/" />} />
+            <Route path="/signup" element={!user ? <SignUp /> : <Navigate to="/" />} />
+            <Route path="/viewPost/:id" element={user ? <ViewPost /> : <Navigate to="/login" />} />
+            <Route path="/editPost" element={user ? <EditPost /> : <Navigate to="/login" />} />
+            <Route path="/editPost/:id" element={user ? <EditPost /> : <Navigate to="/login" />} />
           </Routes>
         </Suspense>
       </BrowserRouter>
